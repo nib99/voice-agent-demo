@@ -1,0 +1,27 @@
+const express = require('express');
+const twilio = require('twilio');
+const app = express();
+
+// Twilio credentials (replace with your own from Twilio dashboard)
+const accountSid = 'YOUR_TWILIO_ACCOUNT_SID';
+const authToken = 'YOUR_TWILIO_AUTH_TOKEN';
+const client = twilio(accountSid, authToken);
+
+// Route to initiate an outbound call
+app.get('/make-call', async (req, res) => {
+  try {
+    const call = await client.calls.create({
+      url: 'YOUR_ELEVENLABS_TTS_AUDIO_URL', // Link to your ElevenLabs MP3
+      to: 'CLIENT_PHONE_NUMBER', // Replace with test number
+      from: 'YOUR_TWILIO_PHONE_NUMBER', // Your Twilio number
+    });
+    res.send(`Call initiated with SID: ${call.sid}`);
+  } catch (error) {
+    res.status(500).send(`Error: ${error.message}`);
+  }
+});
+
+// Start server
+app.listen(3000, () => {
+  console.log('Server running on port 3000');
+});
